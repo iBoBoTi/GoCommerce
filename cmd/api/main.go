@@ -1,1 +1,7 @@
-package api
+package main
+
+import "fmt"
+
+func main() {
+	fmt.Println("Hello GoCommerce")
+}
