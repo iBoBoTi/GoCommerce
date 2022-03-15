@@ -3,7 +3,6 @@ package main
 import (
 	"flag"
 	"fmt"
-	"github.com/gin-gonic/gin"
 	"log"
 	"net/http"
 	"os"
@@ -27,12 +26,9 @@ func main() {
 		errorLog: errorLog,
 	}
 
-	router := gin.Default()
-	router.GET("/v1/api-health-checker", app.healthCheckerHandler)
-
 	server := http.Server{
 		Addr:         fmt.Sprintf(":%v", cfg.port),
-		Handler:      router,
+		Handler:      app.Routes(),
 		ReadTimeout:  10 * time.Second,
 		WriteTimeout: 30 * time.Second,
 	}
