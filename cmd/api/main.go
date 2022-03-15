@@ -28,7 +28,7 @@ func main() {
 	}
 
 	router := gin.Default()
-	router.GET("/api-health-checker", app.healthCheckerHandler)
+	router.GET("/v1/api-health-checker", app.healthCheckerHandler)
 
 	server := http.Server{
 		Addr:         fmt.Sprintf(":%v", cfg.port),
