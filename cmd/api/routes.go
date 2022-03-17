@@ -6,6 +6,7 @@ import (
 
 func (app *application) Routes() *gin.Engine {
 	router := gin.Default()
-	router.GET("/v1/api-health-checker", app.healthCheckerHandler)
+	v1 := router.Group("/v1")
+	v1.GET("/api-health-checker", app.healthCheckerHandler)
 	return router
 }
