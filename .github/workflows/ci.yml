@@ -27,7 +27,7 @@ jobs:
               dep ensure
           fi
       - name: Build
-        run: go build -v ./cmd/api/main.go
+        run: go build -v ./cmd/api/
       - name: Test
         run: |
           go test -v ./...
