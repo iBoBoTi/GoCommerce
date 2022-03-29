@@ -1,9 +1,8 @@
 package main
 
 import (
-	"context"
-	"database/sql"
 	"fmt"
+	"github.com/iBoBoTi/go-commerce/internal/repository"
 	_ "github.com/lib/pq"
 	"log"
 	"net/http"
@@ -25,7 +24,6 @@ func main() {
 		cfg.port = "8080"
 	}
 	cfg.env = os.Getenv("ENV")
-	//cfg.db = fmt.Sprintf("%v://%v@%v:%v/%v?sslmode=disable", dbUser, dbPass, dbHost, dbPort, dbName)
 	cfg.db = fmt.Sprintf("host=%v port=%v user=%v password=%v dbname=%v sslmode=disable", dbHost, dbPort, dbUser, dbPass, dbName)
 
 	infoLog := log.New(os.Stdout, "INFO\t", log.Ldate|log.Ltime)
@@ -44,30 +42,13 @@ func main() {
 		WriteTimeout: 30 * time.Second,
 	}
 
+	goCommerceRepo, err := repository.NewGoCommerceRepo(cfg.db)
+	if err != nil {
+		errorLog.Fatal(err)
+	}
+	app.db = goCommerceRepo.DB
+
 	infoLog.Printf("starting %v server at port %v", cfg.env, cfg.port)
 	errorLog.Fatal(server.ListenAndServe())
 
-}
-
-func PostgresConnection(cfg config) (*sql.DB, error) {
-	//db, err := pgx.Connect(context.Background(), cfg.db)
-	//if err != nil {
-	//	log.Fatal(err)
-	//}
-	db, err := sql.Open("postgres", cfg.db)
-	if err != nil {
-		return nil, err
-	}
-	db.SetMaxOpenConns(25)
-	db.SetMaxIdleConns(25)
-	db.SetConnMaxIdleTime(15 * time.Minute)
-	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
-	defer cancel()
-
-	err = db.PingContext(ctx)
-	if err != nil {
-		return nil, err
-	}
-
-	return db, nil
 }
