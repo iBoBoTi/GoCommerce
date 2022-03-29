@@ -1,6 +1,9 @@
 package main
 
-import "log"
+import (
+	"github.com/jackc/pgx/v4/pgxpool"
+	"log"
+)
 
 const version = "1.0.0"
 
@@ -16,4 +19,5 @@ type application struct {
 	config   config
 	infoLog  *log.Logger
 	errorLog *log.Logger
+	db       *pgxpool.Pool
 }
