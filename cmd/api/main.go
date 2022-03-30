@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"github.com/iBoBoTi/go-commerce/internal/repository"
+	"github.com/joho/godotenv"
 	_ "github.com/lib/pq"
 	"log"
 	"net/http"
@@ -11,6 +12,12 @@ import (
 )
 
 func main() {
+	// load .env
+	err := godotenv.Load("go-commerce.env")
+	if err != nil {
+		log.Fatal("Error loading go-commerce.env file")
+		return
+	}
 	fmt.Println("Hello GoCommerce")
 	dbName := os.Getenv("DB_NAME")
 	dbUser := os.Getenv("DB_USER")
@@ -18,10 +25,11 @@ func main() {
 	dbHost := os.Getenv("DB_HOST")
 	dbPort := os.Getenv("DB_PORT")
 
+	// set application config
 	var cfg config
 	cfg.port = os.Getenv("SERVER_PORT")
 	if cfg.port == "" {
-		cfg.port = "8080"
+		cfg.port = "8081"
 	}
 	cfg.env = os.Getenv("ENV")
 	cfg.db = fmt.Sprintf("host=%v port=%v user=%v password=%v dbname=%v sslmode=disable", dbHost, dbPort, dbUser, dbPass, dbName)
@@ -42,6 +50,8 @@ func main() {
 		WriteTimeout: 30 * time.Second,
 	}
 
+	// Connect to the database and set the database instance on the application
+	infoLog.Println("Connecting to database...")
 	goCommerceRepo, err := repository.NewGoCommerceRepo(cfg.db)
 	if err != nil {
 		errorLog.Fatal(err)
